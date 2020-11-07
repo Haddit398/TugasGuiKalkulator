@@ -26,12 +26,16 @@ public class KalkulatorController implements Initializable {
     TextArea texthasil;
            
     private ArrayList values = new ArrayList(); 
-    private boolean hasOperator = false; 
+    private String varoperator; 
+    private int num1;
+    private int num2;
+    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
     }    
      
+    //fungsi untuk tombol angka, dsini get text dari button
     @FXML
     private void angka(ActionEvent event)
     {  
@@ -41,6 +45,7 @@ public class KalkulatorController implements Initializable {
         addtotext(buttonText);
     }  
     
+    //jika input pertama 0 maka kosong dan tidak ada tambahan 03113(tidak bisa), jika bukan maka tampilkan dan disambung tambahan 121313 
     private void addtotext(String text)
     { 
         values.add(text);
@@ -51,14 +56,15 @@ public class KalkulatorController implements Initializable {
         texthasil.setText(texthasil.getText() + text);
     }
     
+    //untuk hapus semua
     @FXML
     private void resetaction(ActionEvent event)
     { 
         values.clear();
         texthasil.setText("");
-        hasOperator = false; 
     }
     
+    //function untuk operator
      @FXML
     private void operatorbtn(ActionEvent event)
     { 
@@ -66,114 +72,35 @@ public class KalkulatorController implements Initializable {
         String operatorText = button.getText();
         pressOperator(operatorText);       
     }
- 
+    
+    //jika bukan = 
      private void pressOperator(String operator)
-    { 
-        if(!"=".equals(operator))
-        { 
+    {  
             if(isOperator(values.get(values.size()-1).toString()))
             {
                 return;
             }
             
-            // Store operator in values
-            values.add(operator);
-            
-            hasOperator = true;
-            
-            // Display in output
-            addtotext(operator);
-        } 
-        else 
-        {
-             hitung_total();
-        }
+            num1 = Integer.parseInt(texthasil.getText());
+            values.add(operator); 
+            texthasil.setText(""); 
+//            System.out.println("operator"+operator); 
+            varoperator = operator;
     }
     
-    private void hitung_total()
-    {
-        // Variables for computational tasks during this part alone
-        int result = 0;
-        String stringOperator = "";
-        String stringValue1 = "";
-        String stringValue2 = "";
-
-        try
-        {
-            // If an operator has previously been assigned, ignore key press
-            if(values.size() == 0 || isOperator(values.get(values.size()-1).toString()) || !hasOperator)
-            {
-                return;
-            }
-            
-
-            // Calculate the total value
-            for(Iterator<String> i = values.iterator(); i.hasNext();)
-            {
-                // Get text
-                String item = i.next();
-                
-                // If it is an operator
-                if(isOperator(item))
-                {
-                    // Calculate previous values and add to value1 - then set latest operator
-                    if(!"".equals(stringOperator))
-                    {
-                        // Calculate previously stored
-                        result = hitung(Integer.parseInt(stringValue1), Integer.parseInt(stringValue2), stringOperator);
-                        stringValue1 = result + ""; // Add calculated value as first result
-                        stringValue2 = result + "";
-                    }
-                    stringOperator = item;
-                }
-                else
-                {
-                    // If no operator has previously been assigned, just append values to first value
-                    if("".equals(stringOperator))
-                    {
-                        // Append values on eachother
-                        stringValue1 = stringValue1 + item;
-                    }
-                    else
-                    {
-                        // Operator have been assigned, which means we already have a value1 - add to string value 2 instead
-                        stringValue2 = stringValue2 + item;
-                    }
-                }
-                
-                // If this is our last loop, calculate total and add into result
-                if(!i.hasNext())
-                {
-                     result = hitung(Integer.parseInt(stringValue1), Integer.parseInt(stringValue2), stringOperator);
-                }        
-            }
-                           
-
-            // Output results
-            texthasil.setText(result + "");
-            
-            // Clear stored values
-            values.clear();
-             
-            hasOperator = false;
-            
-        }
-        catch(Exception ex)
-        { System.out.println("bil 1: " + stringValue1+"bil 2:"+stringValue2);
-            // Output results
-            texthasil.setText(0 + "");
-            
-            // Clear stored values
-            values.clear();
-             
-            hasOperator = false;
-        } 
+    @FXML
+    private void btnhasil(ActionEvent event)
+    { 
+        Integer hasil = 0;
+        num2 = Integer.parseInt(texthasil.getText());
+//        System.out.println("num1" + num1+"num2"+num2+"operator"+varoperator); 
+        hasil = hitung(num1, num2, varoperator);
+        
+        texthasil.setText(hasil + "");
     }
     
-     // Calculate two numbers and return the result
     public Integer hitung(int num1, int num2, String operator)
     {
-
         switch(operator)
         {
             case "+":
@@ -183,7 +110,6 @@ public class KalkulatorController implements Initializable {
             case "*":
                 return num1 * num2;
             case "/":
-                // This if statement prevents the creation of black holes. You are welcome, earth.
                 if(num2 == 0)
                 {
                     return 0;
@@ -192,13 +118,11 @@ public class KalkulatorController implements Initializable {
             case "%":
                 return num1 % num2;
             default:
-                // Error
                 System.out.println("Undefined operator pressed: " + operator);
                 return 0;
         }
     }
     
-      // Returns true if the string is an operator
     private boolean isOperator(String operator)
     {
         switch(operator)

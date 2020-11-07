@@ -137,7 +137,7 @@
                   <Insets bottom="1.0" left="1.0" right="1.0" top="1.0" />
                </opaqueInsets>
             </Button>
-            <Button mnemonicParsing="false" onAction="#operatorbtn" prefHeight="53.0" prefWidth="89.0" style="-fx-background-color: #088bfc; -fx-background-radius: 0px;" text="=" textFill="WHITE" GridPane.columnIndex="2" GridPane.rowIndex="4">
+            <Button mnemonicParsing="false" onAction="#btnhasil" prefHeight="53.0" prefWidth="89.0" style="-fx-background-color: #088bfc; -fx-background-radius: 0px;" text="=" textFill="WHITE" GridPane.columnIndex="2" GridPane.rowIndex="4">
                <GridPane.margin>
                   <Insets bottom="1.0" left="1.0" right="1.0" top="1.0" />
                </GridPane.margin>
